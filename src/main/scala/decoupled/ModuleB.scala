@@ -8,7 +8,11 @@ import chisel3.util._
 // of the Decoupled(new ModuleABundle)
 
 class ModuleB extends Module {
-  val io = IO(Flipped(Decoupled(new ModuleABundle)))
+  val io = IO(new Bundle {
+    val bundle = Flipped(Decoupled(new ModuleABundle))
+    val reg1_data = Output(UInt(32.W))
+    val reg2_data = Output(UInt(32.W))
+  })
   // this will create the following bundle
   // -> ready (Output)
   // -> valid (Input)
@@ -22,11 +26,14 @@ class ModuleB extends Module {
   // Here we assume Module B will always be ready to receive the data from Module A.
   // although this might not be true in a real world scenario but ideally we assume this
   // for this example.
-  io.ready := 1.U
+  io.bundle.ready := 1.U
 
   // The Module B only receives the data if Module A sets a valid signal
   // which tells that Module A is sending a valid data.
-  when(io.valid) {
-    registers(io.bits.address) := io.bits.data
+  when(io.bundle.valid) {
+    registers(io.bundle.bits.address) := io.bundle.bits.data
   }
+
+  io.reg1_data := registers(0)
+  io.reg2_data := registers(1)
 }
