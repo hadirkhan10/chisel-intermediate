@@ -20,7 +20,12 @@ class ModuleABundle extends Bundle {
 
 
 class ModuleA extends Module {
-  val io = IO(Decoupled(new ModuleABundle)) // here we create a Decoupled interface.
+  val io = IO(new Bundle {
+    val top_addr = Input(UInt(32.W))
+    val top_data = Input(UInt(32.W))
+    val bundle = Decoupled(new ModuleABundle) // here we create a Decoupled interface.
+  })
+
   // using Decoupled(new ModuleABundle) will add the following signals to our bundle
   // -> ready (Input)
   // -> valid (Output)
@@ -30,18 +35,18 @@ class ModuleA extends Module {
 
   // Even though valid must be set only when the Module A has to send the data
   // We assume Module A will always send valid data
-  io.valid := 1.U
+  io.bundle.valid := 1.U
 
   // Now we need to check the Module B which is the receiver
   // if it is ready to receive the data.
   // If Module B is ready to receive the data only then will we send it some data
   // otherwise we will just send zeros.
 
-  when(io.ready) {
-    io.bits.address := 1.U
-    io.bits.data := "h123abcde".U
+  when(io.bundle.ready) {
+    io.bundle.bits.address := io.top_addr
+    io.bundle.bits.data := io.top_data
   } .otherwise {
-    io.bits.address := 0.U
-    io.bits.data := 0.U
+    io.bundle.bits.address := 0.U
+    io.bundle.bits.data := 0.U
   }
 }
