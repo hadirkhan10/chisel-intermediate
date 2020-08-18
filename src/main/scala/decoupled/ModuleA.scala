@@ -38,7 +38,7 @@ class ModuleA extends Module {
   // otherwise we will just send zeros.
 
   when(io.ready) {
-    io.bits.address := 4.U
+    io.bits.address := 1.U
     io.bits.data := "h123abcde".U
   } .otherwise {
     io.bits.address := 0.U

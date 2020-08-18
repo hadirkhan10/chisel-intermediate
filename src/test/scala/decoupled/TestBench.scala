@@ -6,3 +6,9 @@ object ModuleAMain extends App {
     c => new ModuleATester(c)
   }
 }
+
+object ModuleBMain extends App {
+  iotesters.Driver.execute(args, () => new ModuleB) {
+    c => new ModuleBTester(c)
+  }
+}
