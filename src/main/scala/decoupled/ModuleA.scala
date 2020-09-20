@@ -1,7 +1,7 @@
 package decoupled
 import chisel3._
 import chisel3.util._
-import tilelink.TL_H2D
+import merl.uit.tilelink.{TLConfiguration, TL_H2D}
 
 // Decoupled provides port interface of three signals
 // -> ready (Input)
@@ -20,7 +20,7 @@ class ModuleABundle extends Bundle {
 }
 
 
-class ModuleA extends Module {
+class ModuleA(implicit val conf: TLConfiguration) extends Module {
   val io = IO(new Bundle {
     val top_addr = Input(UInt(32.W))
     val top_data = Input(UInt(32.W))
