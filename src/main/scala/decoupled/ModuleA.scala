@@ -1,6 +1,7 @@
 package decoupled
 import chisel3._
 import chisel3.util._
+import tilelink.TL_H2D
 
 // Decoupled provides port interface of three signals
 // -> ready (Input)
@@ -23,6 +24,7 @@ class ModuleA extends Module {
   val io = IO(new Bundle {
     val top_addr = Input(UInt(32.W))
     val top_data = Input(UInt(32.W))
+    val tl_i = new TL_H2D()
     val bundle = Decoupled(new ModuleABundle) // here we create a Decoupled interface.
   })
 
